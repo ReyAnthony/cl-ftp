@@ -373,10 +373,14 @@ without ending up with a CR/CR/LF sequence."
                (send-raw-line conn command)
                data-socket)))
           (t
-           (let ((server-socket (setup-port conn :element-type (ecase type
-                                                                 ((:binary :image)
-                                                                  '(unsigned-byte 8))
-                                                                 (:ascii 'character)))))
+           (let ((server-socket (setup-port conn :element-type                               
+                                            (ecase type
+                                              ((:binary :image)
+                                               '(unsigned-byte 8))
+                                              (:ascii 
+                                               #+sbcl 'character
+                                               #+lispworks '(unsigned-byte 8)
+                                               )))))
              (unwind-protect
                   (progn
                     (when (and rest (integerp rest))
